@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Attendance Confirmation - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header {% if status == 'success' %}bg-success{% elif status == 'warning' %}bg-warning{% else %}bg-danger{% endif %} text-white">
+                    <h4 class="mb-0">
+                        {% if status == 'success' %}
+                            Attendance Marked Successfully
+                        {% elif status == 'warning' %}
+                            Attendance Already Marked
+                        {% else %}
+                            Error Marking Attendance
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        {% if status == 'success' %}
+                            <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                        {% elif status == 'warning' %}
+                            <i class="fas fa-exclamation-circle text-warning" style="font-size: 5rem;"></i>
+                        {% else %}
+                            <i class="fas fa-times-circle text-danger" style="font-size: 5rem;"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="card-title">{{ message }}</h5>
+                    
+                    {% if timetable %}
+                    <div class="mt-4">
+                        <h6>Class Details:</h6>
+                        <p>
+                            <strong>Subject:</strong> {{ timetable.subject.name }}<br>
+                            <strong>Day:</strong> {{ timetable.day_of_week }}<br>
+                            <strong>Time:</strong> {{ timetable.time_slot }}<br>
+                            <strong>Batch:</strong> {{ timetable.batch }}
+                        </p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if attendance %}
+                    <div class="mt-4">
+                        <h6>Attendance Details:</h6>
+                        <p>
+                            <strong>Date:</strong> {{ attendance.date }}<br>
+                            <strong>Time:</strong> {{ attendance.time }}<br>
+                            <strong>Status:</strong> {% if attendance.is_present %}Present{% else %}Absent{% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'core:home' %}" class="btn btn-primary">Go to Dashboard</a>
+                        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">View Attendance Records</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

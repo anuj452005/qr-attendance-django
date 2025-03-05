@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Teacher Dashboard - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Teacher Dashboard</h4>
+            </div>
+            <div class="card-body">
+                <h5>Welcome, {{ user.get_full_name }}!</h5>
+                <p>This is the teacher dashboard. You can generate QR codes for attendance, view attendance records, and manage your classes.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Take Attendance</h5>
+            </div>
+            <div class="card-body">
+                <p>Generate QR codes for attendance marking.</p>
+                <a href="{% url 'attendance:take_attendance' %}" class="btn btn-primary">Take Attendance</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">View Attendance</h5>
+            </div>
+            <div class="card-body">
+                <p>View and manage attendance records for your classes.</p>
+                <a href="{% url 'attendance:attendance_list' %}" class="btn btn-primary">View Records</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">My Timetable</h5>
+            </div>
+            <div class="card-body">
+                <p>View your teaching schedule and timetable.</p>
+                <a href="{% url 'timetable:timetable_list' %}" class="btn btn-primary">View Timetable</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

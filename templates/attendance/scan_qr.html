@@ -1,0 +1,347 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Scan QR Code - QR Attendance System{% endblock %}
+
+{% block extra_head %}
+<style>
+    #qr-reader {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    #qr-reader__scan_region {
+        position: relative;
+    }
+    #qr-reader__scan_region::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid #007bff;
+        z-index: 1;
+    }
+    #qr-reader__status_span {
+        background-color: #f8f9fa;
+        padding: 10px;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    #file-selector {
+        display: none;
+    }
+    .camera-permission-guide {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .camera-permission-guide img {
+        max-width: 100%;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Scan QR Code</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p>Position the QR code within the scanner to mark your attendance.</p>
+                    
+                    <div id="qr-reader"></div>
+                    <div id="qr-reader-results" class="mt-3"></div>
+                    
+                    <div id="status-message" class="alert mt-3" style="display: none;"></div>
+                    
+                    <div class="mt-3">
+                        <button id="start-scanner" class="btn btn-primary">Start Camera Scanner</button>
+                        <button id="upload-qr" class="btn btn-secondary ms-2">Upload QR Image</button>
+                        <input type="file" id="file-selector" accept="image/*">
+                    </div>
+                    
+                    <div class="mt-3 text-muted small">
+                        <p>Having trouble with the camera?</p>
+                        <ul class="text-start">
+                            <li>Make sure you've granted camera permissions to this site</li>
+                            <li>Try using a different browser (Chrome or Firefox recommended)</li>
+                            <li>Use the "Upload QR Image" option if you have a screenshot of the QR code</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="camera-permission-guide" style="display: none;" id="permission-guide">
+                        <h5>How to Enable Camera Permissions</h5>
+                        <p>Your browser is blocking camera access. Here's how to enable it:</p>
+                        
+                        <div class="accordion" id="permissionAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#chromeInstructions">
+                                        Chrome Instructions
+                                    </button>
+                                </h2>
+                                <div id="chromeInstructions" class="accordion-collapse collapse" data-bs-parent="#permissionAccordion">
+                                    <div class="accordion-body">
+                                        <ol>
+                                            <li>Click the camera icon in the address bar</li>
+                                            <li>Select "Always allow" for the camera</li>
+                                            <li>Refresh the page</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#firefoxInstructions">
+                                        Firefox Instructions
+                                    </button>
+                                </h2>
+                                <div id="firefoxInstructions" class="accordion-collapse collapse" data-bs-parent="#permissionAccordion">
+                                    <div class="accordion-body">
+                                        <ol>
+                                            <li>Click the camera icon in the address bar</li>
+                                            <li>Select "Allow" and "Remember this decision"</li>
+                                            <li>Refresh the page</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#edgeInstructions">
+                                        Edge Instructions
+                                    </button>
+                                </h2>
+                                <div id="edgeInstructions" class="accordion-collapse collapse" data-bs-parent="#permissionAccordion">
+                                    <div class="accordion-body">
+                                        <ol>
+                                            <li>Click the camera icon in the address bar</li>
+                                            <li>Select "Always allow" for the camera</li>
+                                            <li>Refresh the page</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let html5QrCode;
+    const qrReader = document.getElementById('qr-reader');
+    const resultsContainer = document.getElementById('qr-reader-results');
+    const statusMessage = document.getElementById('status-message');
+    const startScannerBtn = document.getElementById('start-scanner');
+    const uploadQrBtn = document.getElementById('upload-qr');
+    const fileSelector = document.getElementById('file-selector');
+    const permissionGuide = document.getElementById('permission-guide');
+    
+    function showMessage(message, type) {
+        statusMessage.textContent = message;
+        statusMessage.className = `alert alert-${type} mt-3`;
+        statusMessage.style.display = 'block';
+    }
+    
+    function onScanSuccess(decodedText, decodedResult) {
+        // Stop scanning if camera was used
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().catch(err => console.error("Error stopping scanner:", err));
+        }
+        
+        try {
+            const qrData = JSON.parse(decodedText);
+            
+            // Get location if available
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        markAttendance(qrData, position.coords.latitude, position.coords.longitude);
+                    },
+                    function(error) {
+                        // If location access is denied, still try to mark attendance without location
+                        markAttendance(qrData, null, null);
+                        showMessage("Location access denied. Attendance may not be marked correctly.", "warning");
+                    }
+                );
+            } else {
+                markAttendance(qrData, null, null);
+                showMessage("Geolocation is not supported by this browser.", "warning");
+            }
+        } catch (e) {
+            showMessage("Invalid QR code format. Please scan a valid attendance QR code.", "danger");
+            console.error("QR code parsing error:", e);
+        }
+    }
+    
+    function markAttendance(qrData, latitude, longitude) {
+        showMessage("Processing attendance...", "info");
+        
+        const data = {
+            code: qrData.code,
+            latitude: latitude,
+            longitude: longitude
+        };
+        
+        fetch('/attendance/mark/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showMessage(data.message, "success");
+            } else if (data.status === 'warning') {
+                showMessage(data.message, "warning");
+            } else {
+                showMessage(data.message, "danger");
+            }
+        })
+        .catch(error => {
+            showMessage("Error marking attendance: " + error, "danger");
+            console.error("Fetch error:", error);
+        });
+    }
+    
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    startScannerBtn.addEventListener('click', function() {
+        // Clear previous instance if exists
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => {
+                startScanner();
+            }).catch(err => {
+                console.error("Error stopping previous scanner:", err);
+                startScanner();
+            });
+        } else {
+            startScanner();
+        }
+    });
+    
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { 
+            fps: 10, 
+            qrbox: { width: 250, height: 250 },
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
+            }
+        };
+        
+        // First try with environment camera (back camera)
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            onScanSuccess,
+            (errorMessage) => {
+                console.log("QR Code scanning in progress...");
+            }
+        ).catch(err => {
+            console.log("Error with environment camera, trying user camera:", err);
+            
+            // If environment camera fails, try with user camera (front camera)
+            html5QrCode.start(
+                { facingMode: "user" },
+                config,
+                onScanSuccess,
+                (errorMessage) => {
+                    console.log("QR Code scanning in progress...");
+                }
+            ).catch(err2 => {
+                showMessage("Camera access denied or error starting scanner: " + err2, "danger");
+                console.error("Camera error:", err2);
+                
+                // Show camera permission guide
+                permissionGuide.style.display = 'block';
+                
+                // Check if it's a permission error
+                if (err2.name === 'NotAllowedError' || 
+                    err2.name === 'PermissionDeniedError' || 
+                    err2.name === 'NotReadableError' ||
+                    err2.toString().includes('Permission')) {
+                    showMessage("Camera permission denied. Please check your browser settings and allow camera access.", "warning");
+                }
+            });
+        });
+    }
+    
+    uploadQrBtn.addEventListener('click', function() {
+        fileSelector.click();
+    });
+    
+    fileSelector.addEventListener('change', function(e) {
+        if (e.target.files.length === 0) {
+            return;
+        }
+        
+        const file = e.target.files[0];
+        
+        // If we were scanning, stop it
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => {
+                processFile(file);
+            }).catch(err => {
+                console.error("Error stopping scanner:", err);
+                processFile(file);
+            });
+        } else {
+            processFile(file);
+        }
+    });
+    
+    function processFile(file) {
+        showMessage("Processing QR code image...", "info");
+        
+        html5QrCode = new Html5Qrcode("qr-reader");
+        
+        html5QrCode.scanFile(file, true)
+            .then(decodedText => {
+                onScanSuccess(decodedText);
+            })
+            .catch(err => {
+                showMessage("Error scanning uploaded image: " + err, "danger");
+                console.error("File scanning error:", err);
+            });
+    }
+    
+    // Check if browser supports camera
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showMessage("Your browser doesn't support camera access. Please use a modern browser or the 'Upload QR Image' option.", "warning");
+    }
+});
+</script>
+{% endblock %}

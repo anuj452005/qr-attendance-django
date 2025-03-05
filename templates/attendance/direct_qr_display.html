@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Direct QR Code - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Direct QR Code for Attendance</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ timetable.subject.name }} - {{ timetable.day_of_week }} - {{ timetable.time_slot }}</h5>
+                    <p class="card-text">
+                        <strong>Batch:</strong> {{ timetable.batch }}<br>
+                        <strong>Generated at:</strong> {{ token.created_at|date:"F d, Y H:i" }}<br>
+                        <strong>Expires at:</strong> {{ token.expires_at|date:"F d, Y H:i" }}
+                    </p>
+                    
+                    <div class="qr-code-container my-4">
+                        <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" class="img-fluid">
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h5>Instructions for Students:</h5>
+                        <ol class="text-start">
+                            <li>Open your phone's camera app</li>
+                            <li>Point it at this QR code</li>
+                            <li>Tap the notification or link that appears</li>
+                            <li>Log in with your student credentials if prompted</li>
+                            <li>Your attendance will be marked automatically</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p>Direct URL (for manual access):</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" value="{{ direct_url }}" id="direct-url" readonly>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyUrl()">Copy</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'attendance:generate_direct_qr' %}" class="btn btn-primary">Generate Another QR Code</a>
+                        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">View Attendance Records</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyUrl() {
+    var copyText = document.getElementById("direct-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    
+    // Show copied message
+    var button = document.querySelector("button.btn-outline-secondary");
+    var originalText = button.innerHTML;
+    button.innerHTML = "Copied!";
+    setTimeout(function() {
+        button.innerHTML = originalText;
+    }, 2000);
+}
+</script>
+{% endblock %}

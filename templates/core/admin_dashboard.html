@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Admin Dashboard - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Admin Dashboard</h4>
+            </div>
+            <div class="card-body">
+                <h5>Welcome, {{ user.get_full_name }}!</h5>
+                <p>This is the admin dashboard. You can manage users, view reports, and configure system settings.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">User Management</h5>
+            </div>
+            <div class="card-body">
+                <p>Manage students, teachers, and admin accounts.</p>
+                <a href="/admin/accounts/customuser/" class="btn btn-primary">Manage Users</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Attendance Reports</h5>
+            </div>
+            <div class="card-body">
+                <p>View and export attendance reports.</p>
+                <a href="{% url 'attendance:attendance_list' %}" class="btn btn-primary">View Reports</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">System Settings</h5>
+            </div>
+            <div class="card-body">
+                <p>Configure system settings and parameters.</p>
+                <a href="{% url 'administration:settings' %}" class="btn btn-primary">System Settings</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Timetable Management</h5>
+            </div>
+            <div class="card-body">
+                <p>Manage class timetables and schedules.</p>
+                <a href="{% url 'timetable:timetable_list' %}" class="btn btn-primary">Manage Timetables</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Audit Logs</h5>
+            </div>
+            <div class="card-body">
+                <p>View system audit logs and activities.</p>
+                <a href="/admin/core/auditlog/" class="btn btn-primary">View Logs</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

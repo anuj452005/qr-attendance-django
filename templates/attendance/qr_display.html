@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+
+{% block title %}QR Code - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Attendance QR Code</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h5>{{ timetable.subject.name }}</h5>
+                    <p>{{ timetable.get_day_display }}, {{ timetable.start_time }} - {{ timetable.end_time }}</p>
+                    
+                    <div class="mt-4 mb-4">
+                        <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" class="img-fluid" style="max-width: 300px;">
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <p>This QR code will expire in 5 minutes.</p>
+                        <p>Expiry time: {{ qr_code.expires_at|time }}</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'attendance:take_attendance' %}" class="btn btn-secondary">Generate Another QR Code</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

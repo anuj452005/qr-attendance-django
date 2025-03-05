@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Generate Direct QR Code - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Generate Direct QR Code for Attendance</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Generate a QR code that students can scan with their phone's camera app to mark attendance.
+                        No need for students to use the web app's camera - they can use their native camera app!
+                    </p>
+                    
+                    {% if timetables %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="timetable_id" class="form-label">Select Class</label>
+                                <select name="timetable_id" id="timetable_id" class="form-select" required>
+                                    <option value="">-- Select Class --</option>
+                                    {% for timetable in timetables %}
+                                        <option value="{{ timetable.id }}">
+                                            {{ timetable.subject.name }} - {{ timetable.day_of_week }} - {{ timetable.time_slot }} - {{ timetable.batch }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Generate QR Code</button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p>You don't have any classes assigned to you. Please contact the administrator.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

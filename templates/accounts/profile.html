@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Profile - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">User Profile</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-user-circle fa-7x mb-3"></i>
+                        <h5>{{ user.get_full_name }}</h5>
+                        <p class="text-muted">{{ user.get_user_type_display }}</p>
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table">
+                            <tr>
+                                <th>Username:</th>
+                                <td>{{ user.username }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Full Name:</th>
+                                <td>{{ user.get_full_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>User Type:</th>
+                                <td>{{ user.get_user_type_display }}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Login:</th>
+                                <td>{{ user.last_login }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

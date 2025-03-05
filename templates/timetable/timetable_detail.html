@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Timetable Detail - QR Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Timetable Detail</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Subject</h5>
+                            <p>{{ timetable.subject.name }} ({{ timetable.subject.code }})</p>
+                            
+                            <h5>Teacher</h5>
+                            <p>{{ timetable.teacher.user.get_full_name }}</p>
+                            
+                            <h5>Department</h5>
+                            <p>{{ timetable.department.name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Day & Time</h5>
+                            <p>{{ timetable.get_day_display }}, {{ timetable.start_time }} - {{ timetable.end_time }}</p>
+                            
+                            <h5>Room</h5>
+                            <p>{{ timetable.room }}</p>
+                            
+                            <h5>Semester</h5>
+                            <p>{{ timetable.semester }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'timetable:timetable_list' %}" class="btn btn-secondary">Back to Timetable</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

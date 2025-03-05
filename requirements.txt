@@ -1,0 +1,8 @@
+Django==5.1.6
+django-crispy-forms==2.3
+pillow==11.1.0
+qrcode==8.0
+django-filter==25.1
+django-tables2==2.7.5
+django-import-export==3.3.7
+django-environ==0.11.2
