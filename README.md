@@ -59,6 +59,8 @@ A Django-based QR code attendance system for educational institutions. This syst
 - `api`: API endpoints for mobile integration
 - `core`: Core functionality and utilities
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+# Made by Anuj Tripathi 
+Login credentials:
+Admin: username-> admin1 , password-> admin1
+Teacher : username->teacher1 , password->teacher123
+Student : username->student1 , password->anuj@12345
