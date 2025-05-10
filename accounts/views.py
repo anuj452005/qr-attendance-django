@@ -57,42 +57,74 @@ def direct_login_admin(request):
     if request.user.is_authenticated:
         logout(request)
 
-    # Get or create admin user
-    admin_user = CustomUser.objects.filter(username='admin1').first()
+    # Get admin user
+    admin_user = CustomUser.objects.filter(user_type='ADMIN').first()
     if admin_user:
         login(request, admin_user)
         messages.success(request, f"You are now logged in as Admin: {admin_user.username}")
         return redirect('core:home')
     else:
-        messages.error(request, "Admin user not found. Please use regular login.")
-        return redirect('accounts:login')
+        # Create admin user if not exists
+        admin_user = CustomUser.objects.create_user(
+            username='admin1',
+            email='admin@example.com',
+            password='admin123',
+            first_name='Admin',
+            last_name='User',
+            user_type='ADMIN',
+            is_staff=True,
+            is_superuser=True
+        )
+        login(request, admin_user)
+        messages.success(request, f"Admin user created and logged in: {admin_user.username}")
+        return redirect('core:home')
 
 def direct_login_teacher(request):
     """Direct login as teacher without password"""
     if request.user.is_authenticated:
         logout(request)
 
-    # Get or create teacher user
-    teacher_user = CustomUser.objects.filter(username='teacher1').first()
+    # Get teacher user
+    teacher_user = CustomUser.objects.filter(user_type='TEACHER').first()
     if teacher_user:
         login(request, teacher_user)
         messages.success(request, f"You are now logged in as Teacher: {teacher_user.username}")
         return redirect('core:home')
     else:
-        messages.error(request, "Teacher user not found. Please use regular login.")
-        return redirect('accounts:login')
+        # Create teacher user if not exists
+        teacher_user = CustomUser.objects.create_user(
+            username='teacher1',
+            email='teacher@example.com',
+            password='teacher123',
+            first_name='Teacher',
+            last_name='User',
+            user_type='TEACHER'
+        )
+        login(request, teacher_user)
+        messages.success(request, f"Teacher user created and logged in: {teacher_user.username}")
+        return redirect('core:home')
 
 def direct_login_student(request):
     """Direct login as student without password"""
     if request.user.is_authenticated:
         logout(request)
 
-    # Get or create student user
-    student_user = CustomUser.objects.filter(username='student1').first()
+    # Get student user
+    student_user = CustomUser.objects.filter(user_type='STUDENT').first()
     if student_user:
         login(request, student_user)
         messages.success(request, f"You are now logged in as Student: {student_user.username}")
         return redirect('core:home')
     else:
-        messages.error(request, "Student user not found. Please use regular login.")
-        return redirect('accounts:login')
+        # Create student user if not exists
+        student_user = CustomUser.objects.create_user(
+            username='student1',
+            email='student@example.com',
+            password='student123',
+            first_name='Student',
+            last_name='User',
+            user_type='STUDENT'
+        )
+        login(request, student_user)
+        messages.success(request, f"Student user created and logged in: {student_user.username}")
+        return redirect('core:home')
