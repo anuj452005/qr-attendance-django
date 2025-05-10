@@ -3,7 +3,7 @@
 A Django-based QR code attendance system for educational institutions. This system allows teachers to generate QR codes for attendance and students to mark their attendance by scanning these QR codes.
 
 # deploy link
- https://qr-attendance-django.onrender.com/accounts/login/?next=/
+https://qr-attendance-django.onrender.com/accounts/login/?next=/
 
 ## Features
 
