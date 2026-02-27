@@ -3,7 +3,7 @@ services:
     name: qr-attendance-system
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn qr_attendance_system.wsgi:application"
+    startCommand: "gunicorn qr_attendance_system.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

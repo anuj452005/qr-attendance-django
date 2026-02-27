@@ -2,11 +2,8 @@
 # exit on error
 set -o errexit
 
-# Install dependencies
+# Install dependencies (gunicorn, whitenoise, psycopg2-binary already in requirements.txt)
 pip install -r requirements.txt
-
-# Install additional dependencies for production
-pip install gunicorn psycopg2-binary whitenoise
 
 # Collect static files
 python manage.py collectstatic --no-input
