@@ -1,59 +1,47 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Student Dashboard - QR Attendance System{% endblock %}
+{% block title %}Student Dashboard — QR Attend{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12 mb-4">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Student Dashboard</h4>
-            </div>
-            <div class="card-body">
-                <h5>Welcome, {{ user.get_full_name }}!</h5>
-                <p>This is the student dashboard. You can scan QR codes for attendance, view your attendance records, and check your timetable.</p>
-            </div>
-        </div>
-    </div>
+
+<div class="welcome-banner">
+  <div class="welcome-badge"><i class="fas fa-user-graduate"></i> Student</div>
+  <h4>Hello, {{ user.get_full_name|default:user.username }}! 👋</h4>
+  <p>Scan your QR code, track attendance and view your class schedule.</p>
 </div>
 
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Scan QR Code</h5>
-            </div>
-            <div class="card-body">
-                <p>Scan QR code to mark your attendance.</p>
-                <a href="{% url 'attendance:scan_qr_code' %}" class="btn btn-primary">Scan QR Code</a>
-            </div>
-        </div>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card card-cta h-100">
+      <div class="action-card">
+        <div class="action-icon icon-primary"><i class="fas fa-camera"></i></div>
+        <h5>Scan QR Code</h5>
+        <p>Mark yourself present by scanning the QR code shown by your teacher.</p>
+        <a href="{% url 'attendance:scan_qr_code' %}" class="btn btn-primary btn-lg"><i class="fas fa-qrcode"></i> Scan Now</a>
+      </div>
     </div>
-    
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">My Attendance</h5>
-            </div>
-            <div class="card-body">
-                <p>View your attendance records and statistics.</p>
-                <a href="{% url 'attendance:attendance_list' %}" class="btn btn-primary">View Attendance</a>
-            </div>
-        </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card card-accent-success h-100">
+      <div class="action-card">
+        <div class="action-icon icon-success"><i class="fas fa-calendar-check"></i></div>
+        <h5>My Attendance</h5>
+        <p>View your full attendance history and present/absent statistics.</p>
+        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> View Records</a>
+      </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12 mb-4">
-        <div class="card">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0">My Timetable</h5>
-            </div>
-            <div class="card-body">
-                <p>View your class schedule and timetable.</p>
-                <a href="{% url 'timetable:timetable_list' %}" class="btn btn-primary">View Timetable</a>
-            </div>
+  </div>
+  <div class="col-md-12">
+    <div class="card card-accent-accent">
+      <div class="action-card" style="flex-direction:row;display:flex;align-items:center;gap:1.5rem;text-align:left;">
+        <div class="action-icon icon-accent" style="flex-shrink:0;"><i class="fas fa-calendar-days"></i></div>
+        <div style="flex:1;">
+          <h5 style="margin-bottom:.3rem;">Class Timetable</h5>
+          <p style="margin:0;">Check your weekly class schedule and timings.</p>
         </div>
+        <a href="{% url 'timetable:timetable_list' %}" class="btn btn-primary" style="flex-shrink:0;"><i class="fas fa-arrow-right"></i> View Schedule</a>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

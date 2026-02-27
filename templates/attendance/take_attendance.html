@@ -1,43 +1,47 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Take Attendance - QR Attendance System{% endblock %}
+{% block title %}Take Attendance — QR Attend{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Take Attendance</h4>
-                </div>
-                <div class="card-body">
-                    <p>Select a class to generate a QR code for attendance:</p>
-                    
-                    {% if timetables %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="timetable_id" class="form-label">Select Class</label>
-                                <select class="form-select" id="timetable_id" name="timetable_id" required>
-                                    <option value="">-- Select Class --</option>
-                                    {% for timetable in timetables %}
-                                        <option value="{{ timetable.id }}">
-                                            {{ timetable.subject.name }} ({{ timetable.get_day_display }}, {{ timetable.start_time }} - {{ timetable.end_time }})
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary">Generate QR Code</button>
-                        </form>
-                    {% else %}
-                        <div class="alert alert-info">
-                            No classes found in your timetable. Please contact the administrator.
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
+
+<div class="page-header">
+  <h2><i class="fas fa-qrcode me-2" style="color:var(--primary);"></i>Take Attendance</h2>
+  <p>Select your class to generate a QR code</p>
 </div>
+
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-5">
+    <div class="card card-accent-primary">
+      <div class="card-body" style="padding:2rem;">
+        {% if timetables %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label for="timetable_id" class="form-label">Select Class</label>
+            <select class="form-select" id="timetable_id" name="timetable_id" required>
+              <option value="">— Choose a class —</option>
+              {% for timetable in timetables %}
+              <option value="{{ timetable.id }}">{{ timetable.subject.name }} — {{ timetable.day }}, {{ timetable.start_time|time:"g:i A" }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="alert alert-info">
+            <i class="fas fa-circle-info"></i>
+            A QR code valid for <strong>5 minutes</strong> will be generated.
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">
+            <i class="fas fa-qrcode"></i> Generate QR Code
+          </button>
+        </form>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-calendar-xmark"></i></div>
+          <h6>No classes in your timetable</h6>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

@@ -1,59 +1,55 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Teacher Dashboard - QR Attendance System{% endblock %}
+{% block title %}Teacher Dashboard — QR Attend{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12 mb-4">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Teacher Dashboard</h4>
-            </div>
-            <div class="card-body">
-                <h5>Welcome, {{ user.get_full_name }}!</h5>
-                <p>This is the teacher dashboard. You can generate QR codes for attendance, view attendance records, and manage your classes.</p>
-            </div>
-        </div>
-    </div>
+
+<div class="welcome-banner">
+  <div class="welcome-badge"><i class="fas fa-chalkboard-user"></i> Teacher</div>
+  <h4>Hello, {{ user.get_full_name|default:user.username }}! 👋</h4>
+  <p>Generate QR codes, track attendance and review your class schedule.</p>
 </div>
 
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Take Attendance</h5>
-            </div>
-            <div class="card-body">
-                <p>Generate QR codes for attendance marking.</p>
-                <a href="{% url 'attendance:take_attendance' %}" class="btn btn-primary">Take Attendance</a>
-            </div>
-        </div>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card card-cta h-100">
+      <div class="action-card">
+        <div class="action-icon icon-primary"><i class="fas fa-qrcode"></i></div>
+        <h5>Take Attendance</h5>
+        <p>Generate a QR code for your current class and let students scan it.</p>
+        <a href="{% url 'attendance:take_attendance' %}" class="btn btn-primary btn-lg"><i class="fas fa-play"></i> Start Now</a>
+      </div>
     </div>
-    
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">View Attendance</h5>
-            </div>
-            <div class="card-body">
-                <p>View and manage attendance records for your classes.</p>
-                <a href="{% url 'attendance:attendance_list' %}" class="btn btn-primary">View Records</a>
-            </div>
-        </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card card-accent-accent h-100">
+      <div class="action-card">
+        <div class="action-icon icon-accent"><i class="fas fa-link"></i></div>
+        <h5>Direct QR Code</h5>
+        <p>Share a direct URL-based QR — students open link, no scanning app needed.</p>
+        <a href="{% url 'attendance:generate_direct_qr' %}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Generate</a>
+      </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12 mb-4">
-        <div class="card">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0">My Timetable</h5>
-            </div>
-            <div class="card-body">
-                <p>View your teaching schedule and timetable.</p>
-                <a href="{% url 'timetable:timetable_list' %}" class="btn btn-primary">View Timetable</a>
-            </div>
-        </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card card-accent-success h-100">
+      <div class="action-card">
+        <div class="action-icon icon-success"><i class="fas fa-list-check"></i></div>
+        <h5>Attendance Records</h5>
+        <p>View and manage attendance logs for your classes.</p>
+        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> View Records</a>
+      </div>
     </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card card-accent-warning h-100">
+      <div class="action-card">
+        <div class="action-icon icon-warning"><i class="fas fa-calendar-week"></i></div>
+        <h5>My Timetable</h5>
+        <p>Check your teaching schedule and upcoming class slots.</p>
+        <a href="{% url 'timetable:timetable_list' %}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> View Schedule</a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
